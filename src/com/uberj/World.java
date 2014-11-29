@@ -2,19 +2,103 @@ package com.uberj;
 
 import java.awt.*;
 
-public class World {
+public class World extends PanelWorld {
     private static int MAX_TIME = 2;
 
     public WorldState getCurWorldState() {
         return curWorldState;
     }
 
+    public void paintCells(Graphics g) {
+        for (int row=0; row < curWorldState.rows(); row++) {
+            for (int column=0; column < curWorldState.getColumns(); column++) {
+                curWorldState.getCells()[row][column].paintCell(g);
+            }
+        }
+    };
+
     private WorldState curWorldState;
     private WorldState nextWorldState;
+    private int cellWidth, cellHeight;
+
+    public int getCellHeight() {
+        return cellHeight;
+    }
+
+    public int getCellWidth() {
+        return cellWidth;
+    }
+
+    public class SetWidthAndHeight implements CellOperation {
+        int cellWidth;
+        int cellHeight;
+
+        public SetWidthAndHeight(int width, int height) {
+            cellHeight = height;
+            cellWidth = width;
+        }
+
+        public void op(Cell c) {
+            c.setHeight(cellHeight);
+            c.setWidth(cellWidth);
+        }
+    }
+
+    public World(int [][] seed, int cellWidth, int cellHeight){
+        this(seed);
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
+
+        CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
+        mapOverCells(cop, curWorldState);
+        mapOverCells(cop, nextWorldState);
+    }
+
+    public World(int [][] seed){
+        if (seed.length == 0) {
+            // TODO. Oh how I do hate exceptions in Java. Maybe there is a way for my editor to generate the boiler
+            // plate code
+        }
+        this.curWorldState = new WorldState(this, seed[0].length, seed.length);
+        this.nextWorldState = new WorldState(this, seed[0].length, seed.length);
+        this.seedState(seed);
+    }
+
+    private interface CellOperation {
+        public void op(Cell c);
+    }
+
+    public void mapOverCells(CellOperation op) {
+        mapOverCells(op, curWorldState);
+    }
+
+    public void mapOverCells(CellOperation op, WorldState state){
+        for (int row = 0; row < this.getCurWorldState().getRows(); row++) {
+            for (int col = 0; col < this.getCurWorldState().getColumns(); col++) {
+                op.op(state.getCells()[row][col]);
+            }
+        }
+    }
+
+    public class Seeder implements CellOperation {
+        int [][] seedState;
+
+        public Seeder(int [][] seed) { seedState = seed; }
+
+        public void op(Cell c) {
+            int col = (int) c.getPosition().getX();
+            int row = (int) c.getPosition().getY();
+            c.setState(seedState[row][col]);
+        }
+    }
+
+    public void seedState(int [][] seedState){
+        mapOverCells(new Seeder(seedState));
+    }
 
     public World(int initialCols, int initialRows){
-        this.curWorldState = new WorldState(initialCols, initialRows);
-        this.nextWorldState = new WorldState(initialCols, initialRows);
+        this.curWorldState = new WorldState(this, initialCols, initialRows);
+        this.nextWorldState = new WorldState(this, initialCols, initialRows);
     }
 
     public static void advanceWorld(WorldState cur, WorldState next) {
@@ -38,7 +122,6 @@ public class World {
         int ALIVE = 1;
         int DEAD = 0;
         int neighborsAlive = 0;
-        c.getWorldState().printWorldState();
         for (Cell n: c.getNeighbors()) {
             if (n.getState() == 1) {
                 neighborsAlive++;
@@ -84,7 +167,12 @@ public class World {
     }
 
     public Cell getCell(Point p)  {
-        // A helper funciton to quickly look up a cell in the currentWorldState
+        // A helper function to quickly look up a cell in the currentWorldState
         return this.curWorldState.getCell(p);
+    }
+
+    public Cell getCellFromPanelPoint(Point p)  {
+        // Find the cell corresponding to the pixle coordinate p
+        return Cell.calculateCellPosition(p, curWorldState);
     }
 }

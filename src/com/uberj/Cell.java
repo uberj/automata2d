@@ -4,7 +4,7 @@ package com.uberj;
 import java.awt.*;
 import java.util.Iterator;
 
-public class Cell {
+public class Cell extends PanelCell {
     /*
     Right now a Cell has a state that is an int. Eventually it would be cool to have the state by something else,
     like a color. Its probably possible to make state its own type an encapsulate its data that way.
@@ -13,12 +13,46 @@ public class Cell {
      */
     private int state;
 
+    private Point position;
+    private WorldState worldState;
+
+    public static Point calculatePanelPosition(Cell c) {
+        int xPos = c.getOriginX() + c.getWidth() * (int) c.getPosition().getX();
+        int yPos = c.getOriginY() + c.getHeight() * (int) c.getPosition().getY();
+        return new Point(xPos, yPos);
+    }
+
+    public static Cell calculateCellPosition(Point p, WorldState worldState) {
+        int xPos = (int) (p.getX() - worldState.getWorld().getOriginX()) / worldState.getWorld().getCellWidth();
+        int yPos = (int) (p.getY() - worldState.getWorld().getOriginY()) / worldState.getWorld().getCellHeight();
+        return worldState.getCell(new Point(xPos, yPos));
+    }
+
+    public void paintCell(Graphics g) {
+        Point panelPoint = calculatePanelPosition(this);
+        if (this.state == 0) {
+            g.setColor(Color.RED);
+        } else {
+            g.setColor(Color.BLACK);
+        }
+        g.fillRect(
+                (int) panelPoint.getX(), (int) panelPoint.getY(),
+                this.getWidth() - this.getPadding(), this.getHeight() - this.getPadding()
+        );
+        g.setColor(Color.BLACK);
+        g.drawRect(
+                (int) panelPoint.getX(), (int) panelPoint.getY(),
+                this.getWidth() - this.getPadding(), this.getHeight() - this.getPadding()
+        );
+    }
+
+    public PanelWorld getWorld() {
+        return this.worldState.getWorld();
+    }
+
     public Point getPosition() {
         return position;
     }
-
-    private Point position;
-    private WorldState worldState;
 
     public Cell(WorldState worldState, Point position, int iState){
         this.worldState = worldState;

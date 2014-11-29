@@ -11,8 +11,10 @@ public class WorldState {
     private Cell [][] cells;
     private int columns;
     private int rows;
+    private World world;
 
-    public WorldState(int iColumns, int iRows) {
+    public WorldState(World world, int iColumns, int iRows) {
+        this.world = world;
         this.columns = iColumns;
         this.rows = iRows;
         this.cells = new Cell[iRows][iColumns];
@@ -21,6 +23,10 @@ public class WorldState {
                 this.cells[row][col] = new Cell(this, new Point(col, row), 0);
             }
         }
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     public void printWorldState() {

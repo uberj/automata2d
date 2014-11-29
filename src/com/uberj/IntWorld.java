@@ -12,14 +12,6 @@ public class IntWorld extends World {
         super(initialCols, initialRows);
     }
 
-    public void seedState(int [][] seedState){
-        for (int i = 0; i < this.getCurWorldState().getRows(); i++) {
-            for (int j = 0; j < this.getCurWorldState().getColumns(); j++) {
-                this.getCurWorldState().getCells()[j][i].setState(seedState[j][i]);
-            }
-        }
-    }
-
     public int [][] getWorldState() {
         WorldState curState = this.getCurWorldState();
         int [][] encodedWorld = new int[curState.getRows()][curState.getColumns()];

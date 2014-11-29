@@ -64,4 +64,20 @@ public class WorldTest {
             Assert.assertEquals(world.getCurWorldState().getCells()[i][i].getState(), 1);
         }
     }
+
+    @Test
+    public void testWorldSetupSeedConstructor() {
+        int [][] identityState = new int [][]{
+                {1,0,0,0,0},
+                {0,1,0,0,0},
+                {0,0,1,0,0},
+                {0,0,0,1,0},
+                {0,0,0,0,1}
+        };
+        World world = new World(identityState);
+        world.getCurWorldState().printWorldState();
+        for (int i = 0; i < 4; i++) {
+            Assert.assertEquals(world.getCurWorldState().getCells()[i][i].getState(), 1);
+        }
+    }
 }
