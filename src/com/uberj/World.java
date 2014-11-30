@@ -109,7 +109,7 @@ public class World {
     public static void advanceWorld(WorldState cur, WorldState next) {
         // Threading could happen here
         // TODO: implement iterator on WorldState
-        for (int row=0; row < cur.rows(); row++) {
+        for (int row=0; row < cur.getRows(); row++) {
             for (int column=0; column < cur.getColumns(); column++) {
                 next.setWorldStateForCell(column, row, applyRule(cur.getCells()[row][column], column, row));
             }
@@ -171,7 +171,7 @@ public class World {
 
     private class APanelWorld extends PanelWorld {
         public void paintCells(Graphics g) {
-            for (int row = 0; row < curWorldState.rows(); row++) {
+            for (int row = 0; row < curWorldState.getRows(); row++) {
                 for (int column = 0; column < curWorldState.getColumns(); column++) {
                     curWorldState.getCells()[row][column].paintCell(g);
                 }

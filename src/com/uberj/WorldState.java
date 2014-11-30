@@ -8,10 +8,33 @@ import java.awt.geom.Point2D;
  */
 
 public class WorldState {
-    private Cell [][] cells;
-    private int columns;
-    private int rows;
     private World world;
+
+    public World getWorld() {
+        return world;
+    }
+
+    private int rows;
+
+    public int getRows() {
+        return rows;
+    }
+
+    private Cell [][] cells;
+
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+    public void setCells(Cell[][] cells) {
+        this.cells = cells;
+    }
+
+    private int columns;
+
+    public int getColumns() {
+        return columns;
+    }
 
     public WorldState(World world, int iColumns, int iRows) {
         this.world = world;
@@ -23,10 +46,6 @@ public class WorldState {
                 this.cells[row][col] = new Cell(this, new Point(col, row), 0);
             }
         }
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public void printWorldState() {
@@ -43,38 +62,8 @@ public class WorldState {
         }
     }
 
-    public int rows() {
-        return rows;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public Cell[][] getCells() {
-        return cells;
-    }
-
-    public void setCells(Cell[][] cells) {
-        this.cells = cells;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
     public void setWorldStateForCell(int column, int row, int value) {
         this.cells[row][column].setState(value);
-    }
-
-    public int [][] getWorldStateIntMap() {
-        int [][] encodedWorld = new int[this.rows][this.columns];
-        for (int j = 0; j < this.rows; j++) {
-            for (int i = 0; i < this.columns; i++) {
-                encodedWorld[j][i] = this.cells[j][i].getState();
-            }
-        }
-        return encodedWorld;
     }
 
     public boolean inBounds(Point point) {
@@ -85,14 +74,6 @@ public class WorldState {
             return false;
         }
         return true;
-    }
-
-    public void setWorldStateFromIntMap(int [][] worldState) {
-        for (int j = 0; j < this.rows; j++) {
-            for (int i = 0; i < this.columns; i++) {
-                this.cells[j][i].setState(worldState[j][i]);
-            }
-        }
     }
 
     public Cell getCell(Point p){
