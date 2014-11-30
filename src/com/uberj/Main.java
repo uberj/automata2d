@@ -2,7 +2,6 @@ package com.uberj;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import com.uberj.World;
 
 public class Main {
 
@@ -82,7 +81,7 @@ class GridPanel extends JPanel {
 
     public void activateCell(Point p) {
         /* Activate some cells */
-        Cell c = world.getCellFromPanelPoint(p);
+        Cell c = world.getPanelWorld().getCellFromPanelPoint(p);
         if (c != null) { c.setState(1); }
     }
 
@@ -107,7 +106,7 @@ class GridPanel extends JPanel {
         addMouseMotionListener((new MouseAdapter() {
             public void mouseDragged(MouseEvent e) {
                 repaint();
-                Cell c = world.getCellFromPanelPoint(new Point(e.getX(), e.getY()));
+                Cell c = world.getPanelWorld().getCellFromPanelPoint(new Point(e.getX(), e.getY()));
                 if (c != null) {
                     c.setState(1);
                 }
@@ -121,7 +120,7 @@ class GridPanel extends JPanel {
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        world.paintCells(g);
+        world.getPanelWorld().paintCells(g);
     }
 }
 

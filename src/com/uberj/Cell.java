@@ -23,8 +23,8 @@ public class Cell extends PanelCell {
     }
 
     public static Cell calculateCellPosition(Point p, WorldState worldState) {
-        int xPos = (int) (p.getX() - worldState.getWorld().getOriginX()) / worldState.getWorld().getCellWidth();
-        int yPos = (int) (p.getY() - worldState.getWorld().getOriginY()) / worldState.getWorld().getCellHeight();
+        int xPos = (int) (p.getX() - worldState.getWorld().getPanelWorld().getOriginX()) / worldState.getWorld().getCellWidth();
+        int yPos = (int) (p.getY() - worldState.getWorld().getPanelWorld().getOriginY()) / worldState.getWorld().getCellHeight();
         return worldState.getCell(new Point(xPos, yPos));
     }
 
@@ -47,7 +47,7 @@ public class Cell extends PanelCell {
     }
 
     public PanelWorld getWorld() {
-        return this.worldState.getWorld();
+        return this.worldState.getWorld().getPanelWorld();
     }
 
     public Point getPosition() {

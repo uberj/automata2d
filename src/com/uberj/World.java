@@ -2,20 +2,18 @@ package com.uberj;
 
 import java.awt.*;
 
-public class World extends PanelWorld {
+public class World {
     private static int MAX_TIME = 2;
+
+    private final APanelWorld panelWorld = new APanelWorld();
+
+    public PanelWorld getPanelWorld() {
+        return panelWorld;
+    }
 
     public WorldState getCurWorldState() {
         return curWorldState;
     }
-
-    public void paintCells(Graphics g) {
-        for (int row = 0; row < curWorldState.rows(); row++) {
-            for (int column = 0; column < curWorldState.getColumns(); column++) {
-                curWorldState.getCells()[row][column].paintCell(g);
-            }
-        }
-    };
 
     private WorldState curWorldState;
     private WorldState nextWorldState;
@@ -49,9 +47,9 @@ public class World extends PanelWorld {
             // TODO. Oh how I do hate exceptions in Java. Maybe there is a way for my editor to generate the boiler
             // plate code
         }
-        this.curWorldState = new WorldState(this, seed[0].length, seed.length);
-        this.nextWorldState = new WorldState(this, seed[0].length, seed.length);
-        this.seedState(seed);
+        World.this.curWorldState = new WorldState(World.this, seed[0].length, seed.length);
+        World.this.nextWorldState = new WorldState(World.this, seed[0].length, seed.length);
+        World.this.seedState(seed);
     }
 
     public void mapOverCells(CellOperation op) {
@@ -59,8 +57,8 @@ public class World extends PanelWorld {
     }
 
     public void mapOverCells(CellOperation op, WorldState state){
-        for (int row = 0; row < this.getCurWorldState().getRows(); row++) {
-            for (int col = 0; col < this.getCurWorldState().getColumns(); col++) {
+        for (int row = 0; row < World.this.getCurWorldState().getRows(); row++) {
+            for (int col = 0; col < World.this.getCurWorldState().getColumns(); col++) {
                 op.op(state.getCells()[row][col]);
             }
         }
@@ -83,11 +81,11 @@ public class World extends PanelWorld {
     }
 
     public World(int cellWidth, int cellHeight, int initialCols, int initialRows){
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
+        World.this.cellWidth = cellWidth;
+        World.this.cellHeight = cellHeight;
 
-        this.curWorldState = new WorldState(this, initialCols, initialRows);
-        this.nextWorldState = new WorldState(this, initialCols, initialRows);
+        World.this.curWorldState = new WorldState(World.this, initialCols, initialRows);
+        World.this.nextWorldState = new WorldState(World.this, initialCols, initialRows);
 
         CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
         mapOverCells(cop, curWorldState);
@@ -95,14 +93,14 @@ public class World extends PanelWorld {
     }
 
     public World(int cellWidthHeight, Dimension worldDimension){
-        this.cellWidth = cellWidthHeight;
-        this.cellHeight = cellWidthHeight;
+        World.this.cellWidth = cellWidthHeight;
+        World.this.cellHeight = cellWidthHeight;
 
         int initialCols = (int) worldDimension.getWidth() / cellWidthHeight;
         int initialRows = (int) worldDimension.getHeight() / cellWidthHeight;
 
-        this.curWorldState = new WorldState(this, initialCols, initialRows);
-        this.nextWorldState = new WorldState(this, initialCols, initialRows);
+        World.this.curWorldState = new WorldState(World.this, initialCols, initialRows);
+        World.this.nextWorldState = new WorldState(World.this, initialCols, initialRows);
 
         CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
         mapOverCells(cop, curWorldState);
@@ -155,7 +153,7 @@ public class World extends PanelWorld {
 
     public void simulateTimeAmount(int time) {
         for (int i = 0; i < time; i++) {
-            advanceWorld(this.curWorldState, this.nextWorldState);
+            advanceWorld(World.this.curWorldState, World.this.nextWorldState);
             swapWorldState();
         }
     }
@@ -166,18 +164,28 @@ public class World extends PanelWorld {
 
     public void swapWorldState() {
         // TODO: this.{cur,next}WorldState are a references, right?
-        WorldState tmpWorldStateRef = this.curWorldState;
-        this.curWorldState = this.nextWorldState;
-        this.nextWorldState = tmpWorldStateRef;
+        WorldState tmpWorldStateRef = World.this.curWorldState;
+        World.this.curWorldState = World.this.nextWorldState;
+        World.this.nextWorldState = tmpWorldStateRef;
     }
 
     public Cell getCell(Point p)  {
         // A helper function to quickly look up a cell in the currentWorldState
-        return this.curWorldState.getCell(p);
+        return World.this.curWorldState.getCell(p);
     }
 
-    public Cell getCellFromPanelPoint(Point p)  {
-        // Find the cell corresponding to the pixle coordinate p
-        return Cell.calculateCellPosition(p, curWorldState);
+    private class APanelWorld extends PanelWorld {
+        public void paintCells(Graphics g) {
+            for (int row = 0; row < curWorldState.rows(); row++) {
+                for (int column = 0; column < curWorldState.getColumns(); column++) {
+                    curWorldState.getCells()[row][column].paintCell(g);
+                }
+            }
+        }
+
+        public Cell getCellFromPanelPoint(Point p)  {
+            // Find the cell corresponding to the pixle coordinate p
+            return Cell.calculateCellPosition(p, curWorldState);
+        }
     }
 }
