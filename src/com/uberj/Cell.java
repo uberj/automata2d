@@ -4,7 +4,7 @@ package com.uberj;
 import java.awt.*;
 import java.util.Iterator;
 
-public class Cell extends PanelCell {
+public class Cell {
     /*
     Right now a Cell has a state that is an int. Eventually it would be cool to have the state by something else,
     like a color. Its probably possible to make state its own type an encapsulate its data that way.
@@ -34,7 +34,14 @@ public class Cell extends PanelCell {
         return worldState;
     }
 
+    private PanelCell panelCell;
+
+    public PanelCell getPanelCell() {
+        return panelCell;
+    }
+
     public Cell(WorldState worldState, Point position, int iState){
+        this.panelCell = new APanelCell();
         this.worldState = worldState;
         this.position = position;
         this.state = iState;
@@ -44,18 +51,38 @@ public class Cell extends PanelCell {
         return this.worldState.getWorld().getPanelWorld();
     }
 
-    public static Point calculatePanelPosition(Cell c) {
-        int xPos = c.getOriginX() + c.getWidth() * (int) c.getPosition().getX();
-        int yPos = c.getOriginY() + c.getHeight() * (int) c.getPosition().getY();
-        return new Point(xPos, yPos);
-    }
+    private class APanelCell extends PanelCell {
+        @Override
+        public PanelWorld getWorld() {
+            return Cell.this.getWorld();
+        }
 
-    public static Cell calculateCellPosition(Point p, WorldState worldState) {
-        int xPos = (int) (p.getX() - worldState.getWorld().getPanelWorld().getOriginX()) / worldState.getWorld().getCellWidth();
-        int yPos = (int) (p.getY() - worldState.getWorld().getPanelWorld().getOriginY()) / worldState.getWorld().getCellHeight();
-        return worldState.getCell(new Point(xPos, yPos));
-    }
+        @Override
+        public Point getPosition() {
+            return Cell.this.getPosition();
+        }
 
+        @Override
+        public void paintCell(Graphics g) {
+            Point panelPoint = calculatePanelPosition(this);
+            if (Cell.this.state == 0) {
+                g.setColor(Color.BLACK);
+            } else {
+                g.setColor(Color.RED);
+            }
+            g.fillRect(
+                    (int) panelPoint.getX(), (int) panelPoint.getY(),
+                    this.getWidth() - this.getPadding(), this.getHeight() - this.getPadding()
+            );
+            g.setColor(Color.BLACK);
+            g.drawRect(
+                    (int) panelPoint.getX(), (int) panelPoint.getY(),
+                    this.getWidth() - this.getPadding(), this.getHeight() - this.getPadding()
+            );
+
+        }
+    }
+    /*
     public void paintCell(Graphics g) {
         Point panelPoint = calculatePanelPosition(this);
         if (this.state == 0) {
@@ -73,6 +100,7 @@ public class Cell extends PanelCell {
                 this.getWidth() - this.getPadding(), this.getHeight() - this.getPadding()
         );
     }
+    */
 
     public Neighbors getNeighbors() {
         return new Neighbors(this);

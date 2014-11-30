@@ -72,8 +72,8 @@ public class World {
         }
 
         public void op(Cell c) {
-            c.setHeight(cellHeight);
-            c.setWidth(cellWidth);
+            c.getPanelCell().setHeight(cellHeight);
+            c.getPanelCell().setWidth(cellWidth);
         }
     }
 
@@ -172,14 +172,14 @@ public class World {
         public void paintCells(Graphics g) {
             for (int row = 0; row < curWorldState.getRows(); row++) {
                 for (int column = 0; column < curWorldState.getColumns(); column++) {
-                    curWorldState.getCells()[row][column].paintCell(g);
+                    curWorldState.getCells()[row][column].getPanelCell().paintCell(g);
                 }
             }
         }
 
         public Cell getCellFromPanelPoint(Point p)  {
             // Find the cell corresponding to the pixle coordinate p
-            return Cell.calculateCellPosition(p, curWorldState);
+            return PanelCell.calculateCellPosition(p, curWorldState);
         }
     }
 }
