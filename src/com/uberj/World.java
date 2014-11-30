@@ -17,7 +17,6 @@ public class World {
         return curWorldState;
     }
 
-
     private int cellHeight;
 
     public int getCellHeight() {
