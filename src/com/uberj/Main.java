@@ -7,37 +7,47 @@ import com.uberj.World;
 public class Main {
 
     public static void main(String[] args) {
-        //World world = new World(5, 2);
-        //world.simulate();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                setupGUI();
             }
         });
     }
 
-    private static void createAndShowGUI() {
-        System.out.println( "Created GUI on EDT? "+ SwingUtilities.isEventDispatchThread() );
-        JFrame f = new JFrame("Swing Paint Demo");
+    private static void setupGUI() {
+        JFrame f = new JFrame("Game of life");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final GridPanel panel = new GridPanel(500, 500);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = (int) screenSize.getWidth();
+        int screenHeight = (int) screenSize.getHeight() - 10;
+        final GridPanel panel = new GridPanel(screenWidth, screenHeight);
         f.add(panel);
-        f.setSize(500, 500);
+        f.setSize(screenWidth, screenHeight);
         f.setVisible(true);
-        JButton nextButton = new JButton("Next");
-        nextButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e)
-            {
-                //Execute when button is pressed
-                System.out.println("You clicked the button");
-                panel.getWorld().simulateTimeAmount(1);
-                panel.repaint();
-            }
-        });
-        panel.add(nextButton, BorderLayout.AFTER_LINE_ENDS);
     }
 }
 
+class Simulator implements Runnable {
+    World world;
+    JPanel panel;
+
+    public Simulator(JPanel panel, World world) {
+        this.world = world;
+        this.panel = panel;
+    }
+
+    public void run() {
+        try {
+            while (true) {
+                Thread.sleep(75);
+                world.simulateTimeAmount(1);
+                panel.repaint();
+            }
+        } catch (InterruptedException e) {
+            // TODO
+        }
+    }
+}
 class GridPanel extends JPanel {
 
     private World world;
@@ -46,52 +56,32 @@ class GridPanel extends JPanel {
         return world;
     }
 
-    public GridPanel(int width, int height) {
+    public GridPanel(int screenWidth, int screenHeight) {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        world =  new World(new int [][]{
-            {1,0,0,0,1,0,1,0,1,0},
-            {1,1,0,1,0,0,1,1,1,0},
-            {0,0,1,0,0,0,1,0,0,1},
-            {0,1,0,1,0,0,0,1,1,0},
-            {0,0,0,0,1,0,1,1,1,1}
-        }, 50, 50);
+        world =  new World(20, screenWidth, screenHeight);
+        (new Thread(new Simulator(this, world))).start();
 
         addMouseListener((new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 repaint();
                 Cell c = world.getCellFromPanelPoint(new Point(e.getX(), e.getY()));
-                c.setState(1);
-                System.out.format("Clicked on cell %s, %s\n", c.getPosition().getX(), c.getPosition().getY());
+                if (c != null) {
+                    c.setState(1);
+                }
             }
         }));
 
 
-        /*
         addMouseMotionListener((new MouseAdapter() {
             public void mouseDragged(MouseEvent e) {
-                moveSquare(e.getX(), e.getY());
+                repaint();
+                Cell c = world.getCellFromPanelPoint(new Point(e.getX(), e.getY()));
+                if (c != null) {
+                    c.setState(1);
+                }
             }
         }));
-        */
     }
-
-    /*
-    private void moveSquare(int x, int y) {
-        int OFFSET = 1;
-        final int CURR_X = redSquare.getxPos();
-        final int CURR_Y = redSquare.getyPos();
-        final int CURR_W = redSquare.getWidth();
-        final int CURR_H = redSquare.getHeight();
-        if ((CURR_X != x) || (CURR_Y != y)) {
-            repaint(CURR_X, CURR_Y, CURR_W + OFFSET, CURR_H + OFFSET);
-            repaint();
-            redSquare.setxPos(x);
-            redSquare.setyPos(y);
-            repaint(redSquare.getxPos(), redSquare.getyPos(),
-                    redSquare.getWidth() + OFFSET, redSquare.getHeight() + OFFSET);
-        }
-    }
-    */
 
     public Dimension getPreferredSize() {
         return new Dimension(500, 500);
@@ -105,7 +95,7 @@ class GridPanel extends JPanel {
 
 abstract class PanelWorld {
     private int originX;
-    private int originY = 80;
+    private int originY;
 
     public int getOriginY() {
         return originY;
@@ -121,8 +111,8 @@ abstract class PanelWorld {
 
 
 abstract class PanelCell {
-    private int width = 10;
-    private int height = 10;
+    private int width;
+    private int height;
     private int padding = 1;
 
     public abstract PanelWorld getWorld();

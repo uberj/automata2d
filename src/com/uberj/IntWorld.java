@@ -9,7 +9,7 @@ public class IntWorld extends World {
       A convenient test class for treating the WroldState like it were a 2d array of integers.
      */
     public IntWorld(int initialCols, int initialRows){
-        super(initialCols, initialRows);
+        super(1, 1, initialCols, initialRows);
     }
 
     public int [][] getWorldState() {

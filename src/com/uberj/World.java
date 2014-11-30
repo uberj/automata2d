@@ -96,21 +96,36 @@ public class World extends PanelWorld {
         mapOverCells(new Seeder(seedState));
     }
 
-    public World(int initialCols, int initialRows){
+    public World(int cellWidth, int cellHeight, int initialCols, int initialRows){
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
         this.curWorldState = new WorldState(this, initialCols, initialRows);
         this.nextWorldState = new WorldState(this, initialCols, initialRows);
+        CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
+        mapOverCells(cop, curWorldState);
+        mapOverCells(cop, nextWorldState);
+    }
+
+    public World(int cellWidthHeight, int screenWidth, int screenHeight){
+        this.cellWidth = cellWidthHeight;
+        this.cellHeight = cellWidthHeight;
+        int initialCols = screenWidth / (cellWidthHeight);
+        int initialRows = screenHeight / (cellWidthHeight);
+        this.curWorldState = new WorldState(this, initialCols, initialRows);
+        this.nextWorldState = new WorldState(this, initialCols, initialRows);
+        CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
+        mapOverCells(cop, curWorldState);
+        mapOverCells(cop, nextWorldState);
     }
 
     public static void advanceWorld(WorldState cur, WorldState next) {
         // Threading could happen here
         // TODO: implement iterator on WorldState
-        //cur.printWorldState();
         for (int row=0; row < cur.rows(); row++) {
             for (int column=0; column < cur.getColumns(); column++) {
                 next.setWorldStateForCell(column, row, applyRule(cur.getCells()[row][column], column, row));
             }
         }
-        //next.printWorldState();
     }
 
     public static int applyRule(Cell c, int i, int j) {
@@ -149,7 +164,6 @@ public class World extends PanelWorld {
 
     public void simulateTimeAmount(int time) {
         for (int i = 0; i < time; i++) {
-            System.out.format("Running time %d\n", i);
             advanceWorld(this.curWorldState, this.nextWorldState);
             swapWorldState();
         }

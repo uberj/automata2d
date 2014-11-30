@@ -21,7 +21,7 @@ public class CellTest {
                 new Point(1, 0),
                 new Point(0, 0),
         };
-        World world = new World(3, 3);
+        World world = new World(1, 1, 3, 3);
         // Get the cell right in the middle
         Iterator<Point> neighbors = world.getCurWorldState().getCells()[1][1].getNeighborPoints();
         for(int i = 0; i < expectedPoints.length; i++) {
@@ -40,7 +40,7 @@ public class CellTest {
                 new Point(1, 1),
                 new Point(1, 0),
         };
-        World world = new World(3, 3);
+        World world = new World(1, 1, 3, 3);
         // Get the cell right in the middle
         Iterator<Point> neighbors = world.getCurWorldState().getCells()[0][2].getNeighborPoints();
         for(int i = 0; i < expectedPoints.length; i++) {
@@ -59,7 +59,7 @@ public class CellTest {
                 new Point(1, 8),
                 new Point(0, 8),
         };
-        World world = new World(7, 10);
+        World world = new World(1, 1, 7, 10);
         // Get the cell right in the middle
         Iterator<Point> neighbors = world.getCurWorldState().getCells()[9][0].getNeighborPoints();
         for(int i = 0; i < expectedPoints.length; i++) {
@@ -83,7 +83,7 @@ public class CellTest {
                 new Point(4, 8),
                 new Point(3, 8),
         };
-        World world = new World(19, 14);
+        World world = new World(1, 1, 19, 14);
         // Get the cell right in the middle
         Iterator<Point> neighbors = world.getCurWorldState().getCells()[9][4].getNeighborPoints();
         for(int i = 0; i < expectedPoints.length; i++) {
@@ -107,7 +107,7 @@ public class CellTest {
                 new Point(1, 0),
                 new Point(0, 0),
         };
-        World world = new World(3, 3);
+        World world = new World(1, 1, 3, 3);
         // Get the cell right in the middle
         Cell mainCell = world.getCurWorldState().getCells()[1][1];
         for(Cell c: mainCell.getNeighbors()) {

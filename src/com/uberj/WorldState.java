@@ -86,6 +86,9 @@ public class WorldState {
     }
 
     public Cell getCell(Point p){
+        if (p.getY() >= this.cells.length || p.getX() >= this.cells[0].length) {
+            return null;
+        }
         return this.cells[(int) p.getY()][(int) p.getX()];
     }
 }
