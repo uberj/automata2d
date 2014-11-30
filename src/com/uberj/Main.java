@@ -121,8 +121,8 @@ class GridPanel extends JPanel {
 }
 
 abstract class PanelWorld {
-    private int originX;
-    private int originY;
+    private int originX; // Defaults to 0
+    private int originY; // Defaults to 0
 
     public int getOriginY() {
         return originY;
