@@ -8,6 +8,7 @@ import java.util.Iterator;
 import static org.junit.Assert.*;
 
 public class CellTest {
+
     @Test
     public void testNeighborIterator() {
         Point point;

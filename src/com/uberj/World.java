@@ -10,8 +10,8 @@ public class World extends PanelWorld {
     }
 
     public void paintCells(Graphics g) {
-        for (int row=0; row < curWorldState.rows(); row++) {
-            for (int column=0; column < curWorldState.getColumns(); column++) {
+        for (int row = 0; row < curWorldState.rows(); row++) {
+            for (int column = 0; column < curWorldState.getColumns(); column++) {
                 curWorldState.getCells()[row][column].paintCell(g);
             }
         }
@@ -44,16 +44,6 @@ public class World extends PanelWorld {
         }
     }
 
-    public World(int [][] seed, int cellWidth, int cellHeight){
-        this(seed);
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
-
-        CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
-        mapOverCells(cop, curWorldState);
-        mapOverCells(cop, nextWorldState);
-    }
-
     public World(int [][] seed){
         if (seed.length == 0) {
             // TODO. Oh how I do hate exceptions in Java. Maybe there is a way for my editor to generate the boiler
@@ -62,10 +52,6 @@ public class World extends PanelWorld {
         this.curWorldState = new WorldState(this, seed[0].length, seed.length);
         this.nextWorldState = new WorldState(this, seed[0].length, seed.length);
         this.seedState(seed);
-    }
-
-    private interface CellOperation {
-        public void op(Cell c);
     }
 
     public void mapOverCells(CellOperation op) {
@@ -99,20 +85,25 @@ public class World extends PanelWorld {
     public World(int cellWidth, int cellHeight, int initialCols, int initialRows){
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
+
         this.curWorldState = new WorldState(this, initialCols, initialRows);
         this.nextWorldState = new WorldState(this, initialCols, initialRows);
+
         CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
         mapOverCells(cop, curWorldState);
         mapOverCells(cop, nextWorldState);
     }
 
-    public World(int cellWidthHeight, int screenWidth, int screenHeight){
+    public World(int cellWidthHeight, Dimension worldDimension){
         this.cellWidth = cellWidthHeight;
         this.cellHeight = cellWidthHeight;
-        int initialCols = screenWidth / (cellWidthHeight);
-        int initialRows = screenHeight / (cellWidthHeight);
+
+        int initialCols = (int) worldDimension.getWidth() / cellWidthHeight;
+        int initialRows = (int) worldDimension.getHeight() / cellWidthHeight;
+
         this.curWorldState = new WorldState(this, initialCols, initialRows);
         this.nextWorldState = new WorldState(this, initialCols, initialRows);
+
         CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
         mapOverCells(cop, curWorldState);
         mapOverCells(cop, nextWorldState);
