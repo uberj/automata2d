@@ -96,10 +96,6 @@ class GridPanel extends JPanel {
                 activateCell(new Point(e.getX() + cellWidthAndHeight , e.getY() + cellWidthAndHeight));
                 activateCell(new Point(e.getX() - cellWidthAndHeight, e.getY() - cellWidthAndHeight));
                 activateCell(new Point(e.getX() + cellWidthAndHeight, e.getY() - cellWidthAndHeight));
-                //Cell c = world.getCellFromPanelPoint(new Point(e.getX(), e.getY()));
-                //if (c != null) {
-                //    c.setState(1);
-                //}
             }
         }));
 
