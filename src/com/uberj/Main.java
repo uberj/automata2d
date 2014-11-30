@@ -43,6 +43,7 @@ public class Main {
 
         // Build our frame
         JFrame f = new JFrame("Game of life");
+        f.setLocation(50, 50);
         f.add(box);
         f.setSize(frameWidth, frameHeight);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,17 +80,27 @@ class GridPanel extends JPanel {
         return world;
     }
 
-    public GridPanel(int cellWidthAndHeight, Dimension worldDimension) {
+    public void activateCell(Point p) {
+        /* Activate some cells */
+        Cell c = world.getCellFromPanelPoint(p);
+        if (c != null) { c.setState(1); }
+    }
+
+    public GridPanel(final int cellWidthAndHeight, Dimension worldDimension) {
         world =  new World(cellWidthAndHeight, worldDimension);
         (new Thread(new Simulator(this, world))).start();
 
         addMouseListener((new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 repaint();
-                Cell c = world.getCellFromPanelPoint(new Point(e.getX(), e.getY()));
-                if (c != null) {
-                    c.setState(1);
-                }
+                activateCell(new Point(e.getX(), e.getY()));
+                activateCell(new Point(e.getX() + cellWidthAndHeight , e.getY() + cellWidthAndHeight));
+                activateCell(new Point(e.getX() - cellWidthAndHeight, e.getY() - cellWidthAndHeight));
+                activateCell(new Point(e.getX() + cellWidthAndHeight, e.getY() - cellWidthAndHeight));
+                //Cell c = world.getCellFromPanelPoint(new Point(e.getX(), e.getY()));
+                //if (c != null) {
+                //    c.setState(1);
+                //}
             }
         }));
 
