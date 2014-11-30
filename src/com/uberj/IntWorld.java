@@ -5,21 +5,30 @@ package com.uberj;
  */
 public class IntWorld extends World {
     /*
-
-      A convenient test class for treating the WroldState like it were a 2d array of integers.
+      A convenient test class for treating the WorldState like it were a 2d array of integers.
      */
     public IntWorld(int initialCols, int initialRows){
         super(1, 1, initialCols, initialRows);
     }
 
+    private class GetIntState implements CellOperation {
+        int [][] state;
+
+        public GetIntState(int [][] state) {
+            this.state = state;
+        }
+
+        public void op(Cell c) {
+            int col = (int) c.getPosition().getX();
+            int row = (int) c.getPosition().getY();
+            this.state[row][col] = c.getState();
+        }
+    }
+
     public int [][] getWorldState() {
         WorldState curState = this.getCurWorldState();
         int [][] encodedWorld = new int[curState.getRows()][curState.getColumns()];
-        for (int j = 0; j < curState.getRows(); j++) {
-            for (int i = 0; i < curState.getColumns(); i++) {
-                encodedWorld[j][i] = curState.getCells()[j][i].getState();
-            }
-        }
+        mapOverCells(new GetIntState(encodedWorld));
         return encodedWorld;
     }
 
