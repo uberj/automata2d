@@ -15,14 +15,37 @@ public class Main {
     }
 
     private static void setupGUI() {
-        JFrame f = new JFrame("Game of life");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Get screen info
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int screenWidth = (int) screenSize.getWidth();
-        int screenHeight = (int) screenSize.getHeight() - 10;
-        final GridPanel panel = new GridPanel(screenWidth, screenHeight);
-        f.add(panel);
-        f.setSize(screenWidth, screenHeight);
+        double frameRatio = 2.0/3.0;
+        int frameWidth = (int) (screenSize.getWidth() * frameRatio);
+        int frameHeight = (int) (screenSize.getHeight() * frameRatio);
+
+        // Give our world some margins
+        double worldRatio = 0.8;
+        int worldWidth = (int) (frameWidth * worldRatio);
+        int worldHeight = (int) (frameHeight * worldRatio);
+        Dimension worldDimension = new Dimension(worldWidth, worldHeight);
+
+        // Make our world Panel
+        int cellWidthAndHeight = 8;
+        final GridPanel panel = new GridPanel(cellWidthAndHeight, worldDimension);
+        panel.setPreferredSize(worldDimension);
+        panel.setMaximumSize(worldDimension);
+        panel.setMinimumSize(worldDimension);
+
+        // Set up a box so we can center our frame
+        Box box = new Box(BoxLayout.Y_AXIS);
+        box.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        box.add(Box.createVerticalGlue());
+        box.add(panel);
+        box.add(Box.createVerticalGlue());
+
+        // Build our frame
+        JFrame f = new JFrame("Game of life");
+        f.add(box);
+        f.setSize(frameWidth, frameHeight);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
     }
 }
@@ -56,9 +79,8 @@ class GridPanel extends JPanel {
         return world;
     }
 
-    public GridPanel(int screenWidth, int screenHeight) {
-        setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        world =  new World(20, screenWidth, screenHeight);
+    public GridPanel(int cellWidthAndHeight, Dimension worldDimension) {
+        world =  new World(cellWidthAndHeight, worldDimension);
         (new Thread(new Simulator(this, world))).start();
 
         addMouseListener((new MouseAdapter() {
@@ -70,7 +92,6 @@ class GridPanel extends JPanel {
                 }
             }
         }));
-
 
         addMouseMotionListener((new MouseAdapter() {
             public void mouseDragged(MouseEvent e) {
