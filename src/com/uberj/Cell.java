@@ -11,10 +11,38 @@ public class Cell extends PanelCell {
 
     Note: A point at Point(X, Y) is going to be at cells[y][x]
      */
+
     private int state;
 
+    public int getState() {
+        return this.state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
     private Point position;
+
+    public Point getPosition() {
+        return position;
+    }
+
     private WorldState worldState;
+
+    public WorldState getWorldState() {
+        return worldState;
+    }
+
+    public Cell(WorldState worldState, Point position, int iState){
+        this.worldState = worldState;
+        this.position = position;
+        this.state = iState;
+    }
+
+    public PanelWorld getWorld() {
+        return this.worldState.getWorld().getPanelWorld();
+    }
 
     public static Point calculatePanelPosition(Cell c) {
         int xPos = c.getOriginX() + c.getWidth() * (int) c.getPosition().getX();
@@ -46,20 +74,6 @@ public class Cell extends PanelCell {
         );
     }
 
-    public PanelWorld getWorld() {
-        return this.worldState.getWorld().getPanelWorld();
-    }
-
-    public Point getPosition() {
-        return position;
-    }
-
-    public Cell(WorldState worldState, Point position, int iState){
-        this.worldState = worldState;
-        this.position = position;
-        this.state = iState;
-    }
-
     public Neighbors getNeighbors() {
         return new Neighbors(this);
     }
@@ -68,13 +82,4 @@ public class Cell extends PanelCell {
         Neighbors n = new Neighbors(this);
         return n.pointIterator();
     }
-    public int getState() {
-        return this.state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public WorldState getWorldState() { return worldState; }
 }
