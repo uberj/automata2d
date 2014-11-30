@@ -31,9 +31,9 @@ public class Cell extends PanelCell {
     public void paintCell(Graphics g) {
         Point panelPoint = calculatePanelPosition(this);
         if (this.state == 0) {
-            g.setColor(Color.RED);
-        } else {
             g.setColor(Color.BLACK);
+        } else {
+            g.setColor(Color.RED);
         }
         g.fillRect(
                 (int) panelPoint.getX(), (int) panelPoint.getY(),
