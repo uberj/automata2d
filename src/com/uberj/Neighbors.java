@@ -45,13 +45,7 @@ public class Neighbors implements Iterable<Cell> {
         }
 
         private boolean inBounds(Point point) {
-            if (point.getX() < 0 || point.getX() >= Neighbors.this.cell.getWorldState().getColumns()) {
-                return false;
-            }
-            if (point.getY() < 0 || point.getY() >= Neighbors.this.cell.getWorldState().getRows()) {
-                return false;
-            }
-            return true;
+            return Neighbors.this.cell.getWorldState().inBounds(point);
         }
 
         private void setNeighborPosition(Point point, int neighborIndex) {

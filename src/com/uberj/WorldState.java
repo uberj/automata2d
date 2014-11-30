@@ -77,6 +77,16 @@ public class WorldState {
         return encodedWorld;
     }
 
+    public boolean inBounds(Point point) {
+        if (point.getX() < 0 || point.getX() >= this.columns) {
+            return false;
+        }
+        if (point.getY() < 0 || point.getY() >= this.rows) {
+            return false;
+        }
+        return true;
+    }
+
     public void setWorldStateFromIntMap(int [][] worldState) {
         for (int j = 0; j < this.rows; j++) {
             for (int i = 0; i < this.columns; i++) {
@@ -86,7 +96,7 @@ public class WorldState {
     }
 
     public Cell getCell(Point p){
-        if (p.getY() >= this.cells.length || p.getX() >= this.cells[0].length) {
+        if (!inBounds(p)) {
             return null;
         }
         return this.cells[(int) p.getY()][(int) p.getX()];
