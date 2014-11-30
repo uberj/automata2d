@@ -3,7 +3,7 @@ package com.uberj;
 import java.awt.*;
 
 public class World {
-    private static int MAX_TIME = 2;
+    private WorldState nextWorldState;
 
     private final APanelWorld panelWorld = new APanelWorld();
 
@@ -11,20 +11,56 @@ public class World {
         return panelWorld;
     }
 
+    private WorldState curWorldState;
+
     public WorldState getCurWorldState() {
         return curWorldState;
     }
 
-    private WorldState curWorldState;
-    private WorldState nextWorldState;
-    private int cellWidth, cellHeight;
+
+    private int cellHeight;
 
     public int getCellHeight() {
         return cellHeight;
     }
 
+    private int cellWidth;
+
     public int getCellWidth() {
         return cellWidth;
+    }
+
+    /* Constructors */
+
+    public World(int [][] seed){
+        if (seed.length == 0) {
+            // TODO. Oh how I do hate exceptions in Java. Maybe there is a way for my editor to generate the boiler
+            // plate code
+        }
+        World.this.curWorldState = new WorldState(World.this, seed[0].length, seed.length);
+        World.this.nextWorldState = new WorldState(World.this, seed[0].length, seed.length);
+        World.this.seedState(seed);
+    }
+
+    public World(int cellWidth, int cellHeight, int initialCols, int initialRows){
+        World.this.cellWidth = cellWidth;
+        World.this.cellHeight = cellHeight;
+
+        World.this.curWorldState = new WorldState(World.this, initialCols, initialRows);
+        World.this.nextWorldState = new WorldState(World.this, initialCols, initialRows);
+
+        CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
+        mapOverCells(cop, curWorldState);
+        mapOverCells(cop, nextWorldState);
+    }
+
+    public World(int cellWidthHeight, Dimension worldDimension){
+        this( // NOTE: Figure out how to handle super long lines in JAVA
+            cellWidthHeight,
+            cellWidthHeight,
+            (int) worldDimension.getWidth() / cellWidthHeight,
+            (int) worldDimension.getHeight() / cellWidthHeight
+        );
     }
 
     public class SetWidthAndHeight implements CellOperation {
@@ -40,16 +76,6 @@ public class World {
             c.setHeight(cellHeight);
             c.setWidth(cellWidth);
         }
-    }
-
-    public World(int [][] seed){
-        if (seed.length == 0) {
-            // TODO. Oh how I do hate exceptions in Java. Maybe there is a way for my editor to generate the boiler
-            // plate code
-        }
-        World.this.curWorldState = new WorldState(World.this, seed[0].length, seed.length);
-        World.this.nextWorldState = new WorldState(World.this, seed[0].length, seed.length);
-        World.this.seedState(seed);
     }
 
     public void mapOverCells(CellOperation op) {
@@ -78,33 +104,6 @@ public class World {
 
     public void seedState(int [][] seedState){
         mapOverCells(new Seeder(seedState));
-    }
-
-    public World(int cellWidth, int cellHeight, int initialCols, int initialRows){
-        World.this.cellWidth = cellWidth;
-        World.this.cellHeight = cellHeight;
-
-        World.this.curWorldState = new WorldState(World.this, initialCols, initialRows);
-        World.this.nextWorldState = new WorldState(World.this, initialCols, initialRows);
-
-        CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
-        mapOverCells(cop, curWorldState);
-        mapOverCells(cop, nextWorldState);
-    }
-
-    public World(int cellWidthHeight, Dimension worldDimension){
-        World.this.cellWidth = cellWidthHeight;
-        World.this.cellHeight = cellWidthHeight;
-
-        int initialCols = (int) worldDimension.getWidth() / cellWidthHeight;
-        int initialRows = (int) worldDimension.getHeight() / cellWidthHeight;
-
-        World.this.curWorldState = new WorldState(World.this, initialCols, initialRows);
-        World.this.nextWorldState = new WorldState(World.this, initialCols, initialRows);
-
-        CellOperation cop = new SetWidthAndHeight(cellWidth, cellHeight);
-        mapOverCells(cop, curWorldState);
-        mapOverCells(cop, nextWorldState);
     }
 
     public static void advanceWorld(WorldState cur, WorldState next) {
@@ -156,10 +155,6 @@ public class World {
             advanceWorld(World.this.curWorldState, World.this.nextWorldState);
             swapWorldState();
         }
-    }
-
-    public void simulate() {
-        simulateTimeAmount(MAX_TIME);
     }
 
     public void swapWorldState() {
