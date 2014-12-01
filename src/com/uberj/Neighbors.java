@@ -8,13 +8,13 @@ import java.util.Set;
 
 
 public class Neighbors implements Iterable<Cell> {
+    
     private Cell cell;
     private ArrayList<Cell> cells;
 
     private class NeighborIterator implements Iterator<Point> {
         /*
           Emit points that are neighbors our the central point. This only implements the 2D case
-
          */
         private int neighborToVisit = 7;
         private int pointX;
