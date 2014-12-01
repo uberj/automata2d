@@ -6,9 +6,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-/**
- * I think I'm doing this wrong. It should figure out a way to use the standard Set implementation
- */
+
 public class Neighbors implements Iterable<Cell> {
     private Cell cell;
     private ArrayList<Cell> cells;
