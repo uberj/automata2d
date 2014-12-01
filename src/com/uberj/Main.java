@@ -71,6 +71,7 @@ class Simulator implements Runnable {
         }
     }
 }
+
 class GridPanel extends JPanel {
 
     private World world;
@@ -121,6 +122,7 @@ class GridPanel extends JPanel {
 }
 
 abstract class PanelWorld {
+
     private int originX; // Defaults to 0
     private int originY; // Defaults to 0
 
