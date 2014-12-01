@@ -11,3 +11,6 @@ This exercise was meant to be a Java refresher. This implementation is likely ov
 * How nice it is to use a strongly typed language
 * How functional concepts don't translate very well to Java (maybe Java 8 lambdas would help here)
 * How to use some handy OOP design patterns (like Constructor/Builder)
+
+This I probably did wrong:
+* I didn't follow a specific coding standard.
